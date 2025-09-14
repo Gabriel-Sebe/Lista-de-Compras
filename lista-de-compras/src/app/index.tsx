@@ -33,6 +33,9 @@ export default function Index() {
 
   return (
     <View style={styles.container}>
+      {/* Ícone do carrinho acima do título */}
+      <MaterialIcons name="shopping-cart" size={48} color="#CA3884" style={{ marginBottom: 10 }} />
+
       <Text style={styles.title}>Lista de Compras</Text>
 
       <TextInput
@@ -101,7 +104,7 @@ const styles = StyleSheet.create({
     color: "#111827",
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 50,
+    marginBottom: 30,
   },
 
   input: {
@@ -155,7 +158,7 @@ const styles = StyleSheet.create({
   },
 
   cardConteiner: {
-    paddingBottom: 50, // para dar espaço no fim
+    paddingBottom: 50,
     gap: 15,
   },
 });
