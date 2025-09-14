@@ -1,6 +1,5 @@
-import { Pressable, StyleSheet, Text, TextInput, Touchable, TouchableOpacity, View } from "react-native";
+import { Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View, ScrollView } from "react-native";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useState } from "react";
 
 interface BuysProps {
@@ -14,7 +13,7 @@ export default function Index() {
   const [item, setItem] = useState("");
 
   function saveItem() {
-    if(item.trim()){
+    if (item.trim()) {
       setbuys([...buys, { id: buys.length + 1, name: item, complete: false }]);
       setItem("");
     }
@@ -22,19 +21,25 @@ export default function Index() {
 
   function toggleComplete(id: number) {
     const updatedBuys = buys.map((buy) =>
-      buy.id === id? {...buy, complete: !buy.complete } : buy
+      buy.id === id ? { ...buy, complete: !buy.complete } : buy
     );
+    setbuys(updatedBuys);
+  }
+
+  function deleteItem(id: number) {
+    const updatedBuys = buys.filter((buy) => buy.id !== id);
     setbuys(updatedBuys);
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Compras da Semana</Text>
+      <Text style={styles.title}>Lista de Compras</Text>
 
       <TextInput
         style={styles.input}
         placeholder="Adicione um novo item"
-        placeholderTextColor="9CA3AF"
+        placeholderTextColor="#9CA3AF"
+        value={item}
         onChangeText={setItem}
       />
 
@@ -42,29 +47,43 @@ export default function Index() {
         <Text style={styles.textButton}>Adicionar Item</Text>
       </TouchableOpacity>
 
-        <View style={styles.cardConteiner}>
-          {buys.map((item) => (
-            <View key={item.id} style={item.complete ? [styles.card, {backgroundColor: "#a9ffbe"}] : styles.card}>
-              <View style={styles.infocard}>
-                <Pressable onPress={() => toggleComplete(item.id)}>
-                  {
-                    item.complete ? (
-                      <MaterialIcons name="check-box" size={20} color="black" />
-                    ) : (
-                      <MaterialIcons 
-                        name="check-box-outline-blank" 
-                        size={20} 
-                        color="#bcbfc5" 
-                      />
-                    )
-                  }
-                </Pressable>
-                <Text style={styles.textItem}>{item.name}</Text>
-              </View>
-              <MaterialIcons name="delete" size={24} color="#bcbfc5" />
+      {/* ScrollView para rolar a lista */}
+      <ScrollView style={{ width: "100%" }} contentContainerStyle={styles.cardConteiner}>
+        {buys.map((item) => (
+          <View
+            key={item.id}
+            style={
+              item.complete
+                ? [styles.card, { backgroundColor: "#a9ffbe" }]
+                : styles.card
+            }
+          >
+            <View style={styles.infocard}>
+              <Pressable onPress={() => toggleComplete(item.id)}>
+                {item.complete ? (
+                  <MaterialIcons name="check-box" size={20} color="black" />
+                ) : (
+                  <MaterialIcons
+                    name="check-box-outline-blank"
+                    size={20}
+                    color="#bcbfc5"
+                  />
+                )}
+              </Pressable>
+
+              <Text style={styles.textItem}>{item.name}</Text>
             </View>
-          ))}
-        </View>
+
+            <Pressable onPress={() => deleteItem(item.id)}>
+              <MaterialIcons
+                name="delete"
+                size={24}
+                color={item.complete ? "black" : "#bcbfc5"}
+              />
+            </Pressable>
+          </View>
+        ))}
+      </ScrollView>
     </View>
   );
 }
@@ -136,7 +155,7 @@ const styles = StyleSheet.create({
   },
 
   cardConteiner: {
-    width: "100%",
+    paddingBottom: 50, // para dar espaço no fim
     gap: 15,
-  }
+  },
 });
