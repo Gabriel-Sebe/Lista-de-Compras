@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TextInput, Touchable, TouchableOpacity, View } from "react-native";
+import { Pressable, StyleSheet, Text, TextInput, Touchable, TouchableOpacity, View } from "react-native";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useState } from "react";
@@ -6,6 +6,7 @@ import { useState } from "react";
 interface BuysProps {
   id: number;
   name: string;
+  complete: boolean;
 }
 
 export default function Index() {
@@ -14,9 +15,16 @@ export default function Index() {
 
   function saveItem() {
     if(item.trim()){
-      setbuys([...buys, {id: buys.length + 1, name: item }]);
+      setbuys([...buys, { id: buys.length + 1, name: item, complete: false }]);
       setItem("");
     }
+  }
+
+  function toggleComplete(id: number) {
+    const updatedBuys = buys.map((buy) =>
+      buy.id === id? {...buy, complete: !buy.complete } : buy
+    );
+    setbuys(updatedBuys);
   }
 
   return (
@@ -35,18 +43,27 @@ export default function Index() {
       </TouchableOpacity>
 
         <View style={styles.cardConteiner}>
-          {buys.map((item) =><View style={styles.card}>
-          <View key={item.id} style={styles.infocard}>
-            <MaterialCommunityIcons 
-            name="checkbox-blank-outline" 
-            size={20} 
-            color="#bcbfc5" 
-            />
-            <Text style={styles.textItem}>{item.name}</Text>
-          </View>
-          <MaterialIcons name="delete" size={24} color="#bcbfc5" />
-        </View> )}
-          
+          {buys.map((item) => (
+            <View key={item.id} style={item.complete ? [styles.card, {backgroundColor: "#a9ffbe"}] : styles.card}>
+              <View style={styles.infocard}>
+                <Pressable onPress={() => toggleComplete(item.id)}>
+                  {
+                    item.complete ? (
+                      <MaterialIcons name="check-box" size={20} color="black" />
+                    ) : (
+                      <MaterialIcons 
+                        name="check-box-outline-blank" 
+                        size={20} 
+                        color="#bcbfc5" 
+                      />
+                    )
+                  }
+                </Pressable>
+                <Text style={styles.textItem}>{item.name}</Text>
+              </View>
+              <MaterialIcons name="delete" size={24} color="#bcbfc5" />
+            </View>
+          ))}
         </View>
     </View>
   );
