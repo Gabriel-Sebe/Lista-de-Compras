@@ -1,8 +1,24 @@
 import { StyleSheet, Text, TextInput, Touchable, TouchableOpacity, View } from "react-native";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { useState } from "react";
+
+interface BuysProps {
+  id: number;
+  name: string;
+}
 
 export default function Index() {
+  const [buys, setbuys] = useState<BuysProps[]>([]);
+  const [item, setItem] = useState("");
+
+  function saveItem() {
+    if(item.trim()){
+      setbuys([...buys, {id: buys.length + 1, name: item }]);
+      setItem("");
+    }
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Compras da Semana</Text>
@@ -11,72 +27,26 @@ export default function Index() {
         style={styles.input}
         placeholder="Adicione um novo item"
         placeholderTextColor="9CA3AF"
+        onChangeText={setItem}
       />
 
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity onPress={saveItem} style={styles.button}>
         <Text style={styles.textButton}>Adicionar Item</Text>
       </TouchableOpacity>
 
         <View style={styles.cardConteiner}>
-          <View style={styles.card}>
-          <View style={styles.infocard}>
+          {buys.map((item) =><View style={styles.card}>
+          <View key={item.id} style={styles.infocard}>
             <MaterialCommunityIcons 
             name="checkbox-blank-outline" 
             size={20} 
             color="#bcbfc5" 
             />
-            <Text style={styles.textItem}> item 1</Text>
+            <Text style={styles.textItem}>{item.name}</Text>
           </View>
           <MaterialIcons name="delete" size={24} color="#bcbfc5" />
-        </View>
-
-        <View style={styles.card}>
-          <View style={styles.infocard}>
-            <MaterialCommunityIcons 
-            name="checkbox-blank-outline" 
-            size={20} 
-            color="#bcbfc5" 
-            />
-            <Text style={styles.textItem}> item 1</Text>
-          </View>
-          <MaterialIcons name="delete" size={24} color="#bcbfc5" />
-        </View>
-
-        <View style={styles.card}>
-          <View style={styles.infocard}>
-            <MaterialCommunityIcons 
-            name="checkbox-blank-outline" 
-            size={20} 
-            color="#bcbfc5" 
-            />
-            <Text style={styles.textItem}> item 1</Text>
-          </View>
-          <MaterialIcons name="delete" size={24} color="#bcbfc5" />
-        </View>
-
-        <View style={styles.card}>
-          <View style={styles.infocard}>
-            <MaterialCommunityIcons 
-            name="checkbox-blank-outline" 
-            size={20} 
-            color="#bcbfc5" 
-            />
-            <Text style={styles.textItem}> item 1</Text>
-          </View>
-          <MaterialIcons name="delete" size={24} color="#bcbfc5" />
-        </View>
-
-        <View style={styles.card}>
-          <View style={styles.infocard}>
-            <MaterialCommunityIcons 
-            name="checkbox-blank-outline" 
-            size={20} 
-            color="#bcbfc5" 
-            />
-            <Text style={styles.textItem}> item 1</Text>
-          </View>
-          <MaterialIcons name="delete" size={24} color="#bcbfc5" />
-        </View>
+        </View> )}
+          
         </View>
     </View>
   );
