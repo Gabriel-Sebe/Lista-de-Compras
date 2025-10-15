@@ -1,88 +1,50 @@
 import { Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View, ScrollView } from "react-native";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useState } from "react";
+import { Link } from "expo-router";
+import { useLists } from "./context/ListContext";
 
-interface BuysProps {
-  id: number;
-  name: string;
-  complete: boolean;
-}
 
 export default function Index() {
-  const [buys, setbuys] = useState<BuysProps[]>([]);
-  const [item, setItem] = useState("");
+   const { lists, addList, deleteList} = useLists();
+   const [newListName, setNewListName] = useState("");
 
-  function saveItem() {
-    if (item.trim()) {
-      setbuys([...buys, { id: buys.length + 1, name: item, complete: false }]);
-      setItem("");
+  function handleAddList() {
+    if (newListName.trim()) {
+      addList(newListName);
+      setNewListName("");
     }
   }
 
-  function toggleComplete(id: number) {
-    const updatedBuys = buys.map((buy) =>
-      buy.id === id ? { ...buy, complete: !buy.complete } : buy
-    );
-    setbuys(updatedBuys);
-  }
-
-  function deleteItem(id: number) {
-    const updatedBuys = buys.filter((buy) => buy.id !== id);
-    setbuys(updatedBuys);
-  }
 
   return (
     <View style={styles.container}>
       {/* Ícone do carrinho acima do título */}
       <MaterialIcons name="shopping-cart" size={48} color="#CA3884" style={{ marginBottom: 10 }} />
 
-      <Text style={styles.title}>Lista de Compras</Text>
+      <Text style={styles.title}>Minhas Lista de Compras</Text>
 
       <TextInput
         style={styles.input}
-        placeholder="Adicione um novo item"
+        placeholder="Nome da nova lista"
         placeholderTextColor="#9CA3AF"
-        value={item}
-        onChangeText={setItem}
+        value={newListName}
+        onChangeText={setNewListName}
       />
 
-      <TouchableOpacity onPress={saveItem} style={styles.button}>
-        <Text style={styles.textButton}>Adicionar Item</Text>
+      <TouchableOpacity onPress={handleAddList} style={styles.button}>
+        <Text style={styles.textButton}>Criar Lista</Text>
       </TouchableOpacity>
 
       {/* ScrollView para rolar a lista */}
-      <ScrollView style={{ width: "100%" }} contentContainerStyle={styles.cardConteiner}>
-        {buys.map((item) => (
-          <View
-            key={item.id}
-            style={
-              item.complete
-                ? [styles.card, { backgroundColor: "#a9ffbe" }]
-                : styles.card
-            }
-          >
-            <View style={styles.infocard}>
-              <Pressable onPress={() => toggleComplete(item.id)}>
-                {item.complete ? (
-                  <MaterialIcons name="check-box" size={20} color="black" />
-                ) : (
-                  <MaterialIcons
-                    name="check-box-outline-blank"
-                    size={20}
-                    color="#bcbfc5"
-                  />
-                )}
-              </Pressable>
-
-              <Text style={styles.textItem}>{item.name}</Text>
-            </View>
-
-            <Pressable onPress={() => deleteItem(item.id)}>
-              <MaterialIcons
-                name="delete"
-                size={24}
-                color={item.complete ? "black" : "#bcbfc5"}
-              />
+      <ScrollView style={{ marginTop: 20, width: "100%" }}>
+        {lists.map((list) => (
+          <View key={list.id} style={styles.card}>
+            <Link href={`/list/${list.id}`} style={styles.listLink}>
+              {list.name}
+            </Link>
+            <Pressable onPress={() => deleteList(list.id)}>
+              <MaterialIcons name="delete" size={24} color="gray" />
             </Pressable>
           </View>
         ))}
@@ -134,17 +96,14 @@ const styles = StyleSheet.create({
   },
 
   card: {
-    width: "100%",
-    height: 57,
-    backgroundColor: "#FFFFFF",
-    elevation: 15,
-    borderRadius: 12,
-
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 20,
-  },
+    backgroundColor: "#fff",  
+    flexDirection: "row", 
+    justifyContent: "space-between", 
+    alignItems: "center", 
+    padding: 15, 
+    marginBottom: 10, 
+    borderRadius: 8, 
+    elevation: 2 },
 
   infocard: {
     flexDirection: "row",
@@ -161,4 +120,7 @@ const styles = StyleSheet.create({
     paddingBottom: 50,
     gap: 15,
   },
+
+  listLink: { fontSize: 18, 
+    color: "#333" },
 });
