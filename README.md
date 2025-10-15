@@ -4,7 +4,8 @@
 O **Lista de Compras** foi desenvolvido para proporcionar mais praticidade e organização no momento de planejar e gerenciar compras do dia a dia.  
 Com uma interface simples e intuitiva, o usuário pode:
 
-- Adicionar itens à lista de forma rápida;
+- Criar e excluir várias listas de compras;
+- Adicionar itens às listas de forma rápida;
 - Marcar produtos já adquiridos;
 - Remover itens que não são mais necessários.
 
